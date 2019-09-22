@@ -84,8 +84,13 @@ def RPA_continuum(a_list,u0_list,_C,_N,UseCGC,_kmin,_kmax,_nkgrid):
     return FoVig+FoVmft+FoVex,FoVex,muig+mumft+muex,muex,Piig+Pimft+Piex,Piex
 
 # System parameters
-a=[7.24315e-01, 2.52640e+00]     # Monomer smearing scale
-u0=[1.41476e+01, -3.78941e+01]     # Excluded-volume parameter
+# T160
+#a=[7.24315e-01, 2.52640e+00]     # Monomer smearing scale
+#u0=[1.41476e+01, -3.78941e+01]     # Excluded-volume parameter
+# T075
+a=[8.24741e-01, 2.51015e+00]     # Monomer smearing scale
+u0=[2.54908e+01, -2.38570e+01]     # Excluded-volume parameter
+
 N=5      # ONLY FOR DGC
 UseCGC = False # Switch between CGC and DGC
 log_space = True
