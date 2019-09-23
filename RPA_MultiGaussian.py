@@ -47,7 +47,7 @@ def RPA_continuum(a_list,u0_list,_C,_N,UseCGC,_kmin,_kmax,_nkgrid):
     # build gaussian interactions 
     Gauss_array = np.zeros(klist.size)
     for ng, u0 in enumerate(u0_list):
-        prefactor = u0/(2*np.pi*a_list[ng]**2)**(3/2)
+        prefactor = u0
         Gauss_array = np.add(Gauss_array,prefactor*Gaussian(k2list,a_list[ng]))
 
     # build the second virial coefficient
@@ -67,7 +67,11 @@ def RPA_continuum(a_list,u0_list,_C,_N,UseCGC,_kmin,_kmax,_nkgrid):
         np.savetxt("DebyeFunction_DGC_N{}.dat".format(_N),np.transpose([k2list,gDGSq]))
         gDGSq=gDGSq * Gauss_array
         np.savetxt("DebyeFunctionTimesGamma2_DGC_N{}.dat".format(_N),np.transpose([k2list,gDGSq]))
-
+        
+        np.savetxt("Gaussian_DGC_N{}.dat".format(_N),np.transpose([k2list,Gauss_array]))
+        
+        
+        
     #
     FoVig = _C*np.log(_C) - _C
     FoVmft = 0.5*_B2*_C*_C
