@@ -62,12 +62,12 @@ def RPA_continuum(a_list,u0_list,_C,_N,UseCGC,_kmin,_kmax,_nkgrid):
         np.savetxt("DebyeFunction_CGC.dat",np.transpose([k2list,gDGSq]))
         gDGSq=gDGSq * Gauss_array
         np.savetxt("DebyeFunctionTimesGamma2_CGC.dat",np.transpose([k2list,gDGSq]))
+        np.savetxt("Gaussian_DGC_N{}.dat".format(_N),np.transpose([k2list,Gauss_array]))
     else:
         gDGSq=gD_DGC(k2list,_N)
         np.savetxt("DebyeFunction_DGC_N{}.dat".format(_N),np.transpose([k2list,gDGSq]))
         gDGSq=gDGSq * Gauss_array
-        np.savetxt("DebyeFunctionTimesGamma2_DGC_N{}.dat".format(_N),np.transpose([k2list,gDGSq]))
-        
+        np.savetxt("DebyeFunctionTimesGamma2_DGC_N{}.dat".format(_N),np.transpose([k2list,gDGSq]))       
         np.savetxt("Gaussian_DGC_N{}.dat".format(_N),np.transpose([k2list,Gauss_array]))
         
         
@@ -77,23 +77,23 @@ def RPA_continuum(a_list,u0_list,_C,_N,UseCGC,_kmin,_kmax,_nkgrid):
     FoVmft = 0.5*_B2*_C*_C
     FoVex = np.sum(k2list*RPA_Fkernel(gDGSq,_N,_C))/(2.*np.pi)**2*dk
     #
-    muig = np.log(_C)
-    mumft = _B2*_C
+    muig = np.log(_C/_N)
+    mumft = _B2*_C*_N
     muex = np.sum(k2list*RPA_mukernel(gDGSq,_N,_C))/(2.*np.pi)**2*dk
     #
     Piig = _C/_N
     Pimft = 0.5*_B2*_C*_C
     Piex = np.sum(k2list*RPA_Pikernel(gDGSq,_N, _C))/(2.*np.pi)**2*dk
     #
-    return FoVig+FoVmft+FoVex,FoVex,muig+mumft+muex,muex,Piig+Pimft+Piex,Piex
+    return FoVig+FoVmft+FoVex,FoVig+FoVmft,muig+mumft+muex,muig+mumft,Piig+Pimft+Piex,Piig+Pimft
 
 # System parameters
 # T160
-#a=[7.24315e-01, 2.52640e+00]     # Monomer smearing scale
-#u0=[1.41476e+01, -3.78941e+01]     # Excluded-volume parameter
+a=[7.24315e-01, 2.52640e+00]     # Monomer smearing scale
+u0=[1.41476e+01, -3.78941e+01]     # Excluded-volume parameter
 # T075
-a=[8.24741e-01, 2.51015e+00]     # Monomer smearing scale
-u0=[2.54908e+01, -2.38570e+01]     # Excluded-volume parameter
+#a=[8.24741e-01, 2.51015e+00]     # Monomer smearing scale
+#u0=[2.54908e+01, -2.38570e+01]     # Excluded-volume parameter
 
 N=5      # ONLY FOR DGC
 UseCGC = False # Switch between CGC and DGC
@@ -113,6 +113,7 @@ else:
     C_values = np.linspace(1E-6,10,1000)
 
 for C in C_values.tolist():
-    F,Fex,mu,muex,Pi,Piex = RPA_continuum(a,u0,C,N,UseCGC,0.,15,150) # Max k in Rg units
-    out.write("{} {} {} {} {} {} {}\n".format(C,Pi,Pi-Piex,mu,mu-muex,F,F-Fex))
+    print(C)
+    F,F_mft,mu,mu_mft,Pi,Pi_mft = RPA_continuum(a,u0,C,N,UseCGC,0.,15,150) # Max k in Rg units
+    out.write("{} {} {} {} {} {} {}\n".format(C,Pi,Pi_mft,mu,mu_mft,F,F_mft))
 out.close()
